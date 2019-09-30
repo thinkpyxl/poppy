@@ -24,7 +24,7 @@ class Trigger extends RegisterSettings
             ],
         ];
         parent::register([
-            'slug'            => PostTypes\Poppy::SLUG,
+            'slug'            => PostTypes\Poppy::SLUG . '__' . self::SLUG,
             'label_placement' => 'top',
             'name'            => __(self::LABEL, 'core'),
             'fields'          => $fields,

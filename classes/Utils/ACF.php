@@ -44,7 +44,7 @@ class ACF
             foreach ($condition_set as $condition) {
                 $adjusted_condition = [];
 
-                if (General::has_key('field', $condition)) {
+                if (array_key_exists('field', $condition)) {
                     $adjusted_condition = array_merge($condition, [
                         'field' => "{$prefix}/{$condition['field']}",
                     ]);

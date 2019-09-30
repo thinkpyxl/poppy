@@ -38,6 +38,8 @@ final class Fields
 
     public $text;
 
+    public $textarea;
+
     public $video;
 
     public $wysiwyg;
@@ -150,6 +152,12 @@ final class Fields
             'label' => __('Text', 'core'),
             'slug'  => 'text',
             'type'  => 'text',
+        ];
+
+        $this->textarea = [
+            'label' => __('Textarea', 'core'),
+            'slug'  => 'textarea',
+            'type'  => 'textarea',
         ];
 
         $this->link = [

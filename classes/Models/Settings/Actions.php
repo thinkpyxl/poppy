@@ -2,44 +2,34 @@
 
 namespace Poppy\Models\Settings;
 
-use Poppy\Utils\Views;
+use Poppy\Utils\Fields;
+use Poppy\Models\PostTypes;
 
-class Actions
+class Actions extends RegisterSettings
 {
-    public static function init()
-    {
-        $class = new self;
-        add_action('add_meta_boxes', [$class, 'register'], 10);
-        add_action('save_post', [$class, 'save']);
-    }
+  const SLUG  = 'actions';
+  const LABEL = 'Actions';
 
-    public static function register()
-    {
-      $class = new self;
-      \add_meta_box(
-    		'poppy_actions',
-    		'Actions',
-    		[$class, 'render'],
-    		'poppy',
-    		'side',
-    		'high'
-    	);
-    }
-
-    public static function render() {
-      global $post;
-      $meta = get_post_meta($post->ID);
-      $fields = [
-        'accept_display' => true,
-        'decline_display' => true,
-        'more_display' => false,
-      ];
-
-      echo Views::get_view('Settings/Actions', $fields);
-    }
-
-    public static function save($post_id) {
-      // var_dump($_POST['poppy']);
-      // die;
-    }
+  public static function init()
+  {
+    $acf      = new Fields();
+    $fields   = [];
+    $location = [
+      [
+        [
+          'param'    => 'post_type',
+          'operator' => '==',
+          'value'    => PostTypes\Poppy::SLUG,
+        ],
+      ],
+    ];
+    parent::register([
+      'slug'            => PostTypes\Poppy::SLUG . '__' . self::SLUG,
+      'label_placement' => 'top',
+      'name'            => __(self::LABEL, 'core'),
+      'fields'          => $fields,
+      'position'        => 'side',
+      'location'        => $location,
+    ]);
+  }
 }

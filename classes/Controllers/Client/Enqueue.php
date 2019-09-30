@@ -48,7 +48,7 @@ class Enqueue
 
     private function get_popup_data($popup) {
         $meta = get_post_meta($popup->ID);
-        // var_dump($meta);
+        var_dump(! $meta['peek']);
 
         return [
             'title' => $popup->post_title,
@@ -58,9 +58,9 @@ class Enqueue
             'alignment' => array_key_exists('alignment', $meta) ? $meta['alignment'] : 'center',
             'position' => array_key_exists('position', $meta) ? $meta['position'] : 'center',
             'size' => array_key_exists('size', $meta) ? $meta['size'] : 'narrow',
-            'docked' => array_key_exists('alignment', $meta) ? $meta['docked'] : false,
-            'peek'  => array_key_exists('peek', $meta) ? $meta['peek'] : true,
-            'peek_message' => array_key_exists('peek_message', $meta) ? $meta['peek_message'] : 'Hola',
+            'docked' => array_key_exists('alignment', $meta) ? $meta['docked'] == '1' : false,
+            'peek'  => array_key_exists('peek', $meta) ? $meta['peek'] == '1' : true,
+            'peek_message' => array_key_exists('peek_message', $meta) ? $meta['peek_message'] : '',
 
             // Actions
             'actions' => [
