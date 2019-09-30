@@ -13,7 +13,31 @@ class Display extends RegisterSettings
   public static function init()
   {
     $acf      = new Fields();
-    $fields   = [];
+    $fields   = [
+      $acf->add('boolean', [
+        'label' => 'All Pages',
+        'slug' => 'all_pages',
+        'ui' => 1
+      ]),
+      $acf->add('post_object', [
+        'label' => 'Select Pages',
+        'slug' => 'pages',
+        'post_type' => [
+          'post',
+          'page'
+        ],
+        'multiple' => 1,
+        'conditional_logic' => [
+          [
+            [
+              'field' => 'all_pages',
+              'operator' => '==',
+              'value' => '0'
+            ],
+          ]
+        ]
+      ])
+    ];
     $location = [
       [
         [

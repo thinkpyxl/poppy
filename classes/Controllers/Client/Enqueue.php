@@ -81,18 +81,32 @@ class Enqueue
 
     private function get_popups()
     {
+        global $post;
+
         $popups_query_args = [
             'post_type' => 'poppy',
             'post_status' => 'publish',
+            'meta_query' => [
+                'relation' => 'OR',
+                [
+                    'key' => 'pages',
+                    'value' => '"' . $post->ID . '"',
+                    'compare' => 'LIKE'
+                ],
+                [
+                    'key' => 'all_pages',
+                    'value' => '1',
+                ]
+            ]
         ];
         $popups_query = new \WP_Query($popups_query_args);
-        $_popups = array_map(
+        $popups = array_map(
             [self::$class, 'get_popup_data'],
             $popups_query->posts
         );
 
         return [
-            'popups' => $_popups,
+            'popups' => $popups,
         ];
     }
 

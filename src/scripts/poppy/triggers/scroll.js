@@ -16,7 +16,7 @@ const scroll = ({ measurement = 'percent', value = '50' }, popup) => {
       popup.classList.remove('inactive');
     } else {
       popup.classList.add('inactive');
-      
+
       if (! popup.classList.contains('peek--false')) {
         popup.classList.add('peek');
       }
