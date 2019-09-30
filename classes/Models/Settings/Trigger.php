@@ -13,7 +13,68 @@ class Trigger extends RegisterSettings
     public static function init()
     {
         $acf      = new Fields();
-        $fields   = [];
+        $fields   = [
+            $acf->add('button_group', [
+                'label' => 'Trigger Type',
+                'slug' => 'trigger_type',
+                'choices' => [
+                    'load' => 'Load',
+                    'scroll' => 'Scroll'
+                ]
+            ]),
+            $acf->add('group', [
+                'label' => '',
+                'slug' => 'trigger_scroll',
+                'sub_fields' => [
+                    $acf->add('button_group', [
+                        'label' => 'Measurement',
+                        'slug' => 'measurement',
+                        'choices' => [
+                            'percent' => 'Percentage',
+                            'pixels' => 'Pixels',
+                        ],
+                    ]),
+                    $acf->add('range', [
+                        'label' => 'Page Height',
+                        'slug' => 'value_percent',
+                        'append' => '%',
+                        'conditional_logic' => [
+                            [
+                                [
+                                    'field' => 'measurement',
+                                    'operator' => '==',
+                                    'value' => 'percent'
+                                ],
+                            ]
+                        ]
+                    ]),
+                    $acf->add('number', [
+                        'label' => 'Scroll Distance',
+                        'slug' => 'value_pixels',
+                        'min' => 0,
+                        'append' => 'px',
+                        'conditional_logic' => [
+                            [
+                                [
+                                    'field' => 'measurement',
+                                    'operator' => '==',
+                                    'value' => 'pixels'
+                                ],
+                            ]
+                        ]
+                    ])
+                ],
+                'conditional_logic' => [
+                    [
+                        [
+                            'field' => 'trigger_type',
+                            'operator' => '==',
+                            'value' => 'scroll'
+                        ],
+                    ]
+                ]
+            ])
+        ];
         $location = [
             [
                 [

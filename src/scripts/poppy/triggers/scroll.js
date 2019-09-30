@@ -12,11 +12,14 @@ const scroll = ({ measurement = 'percent', value = '50' }, popup) => {
     } = documentElement;
     const percent = ((scrollTop / (scrollHeight - clientHeight)) * 100);
   
-    if ((measurement === 'percent' && percent >= parseInt(value)) || scrollTop >= parseInt(value)) {
+    if ((measurement === 'percent' && percent >= parseInt(value)) || (measurement !== 'percent' && scrollTop >= parseInt(value))) {
       popup.classList.remove('inactive');
     } else {
       popup.classList.add('inactive');
-      popup.classList.add('peek');
+      
+      if (! popup.classList.contains('peek--false')) {
+        popup.classList.add('peek');
+      }
     }
   };
 

@@ -81,6 +81,7 @@ class Actions extends RegisterSettings
         ],
       ],
     ];
+    
     parent::register([
       'slug'            => PostTypes\Poppy::SLUG . '__' . self::SLUG,
       'label_placement' => 'top',

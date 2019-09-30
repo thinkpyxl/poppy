@@ -33,7 +33,7 @@ const createPopup = ({
     actions: activeActions,
     open: Actions.open(Popup),
   });
-  const classes = `poppy alignment--${alignment} position--${position} size--${size} ${peek ? 'peek' : '' } ${docked ? 'docked' : '' } inactive`;
+  const classes = `poppy alignment--${alignment} position--${position} size--${size} ${peek ? 'peek' : 'peek--false' } ${docked ? 'docked' : '' } inactive`;
 
   Popup.classList = classes;
   Popup.appendChild(Content);

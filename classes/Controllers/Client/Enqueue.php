@@ -58,17 +58,15 @@ class Enqueue
             'alignment' => array_key_exists('alignment', $fields) ? $fields['alignment'] : 'center',
             'position' => array_key_exists('position', $fields) ? $fields['position'] : 'center',
             'size' => array_key_exists('size', $fields) ? $fields['size'] : 'narrow',
-            'docked' => array_key_exists('alignment', $fields) ? $fields['docked'] == '1' : false,
-            'peek'  => array_key_exists('peek', $fields) ? $fields['peek'] == '1' : true,
+            'docked' => array_key_exists('alignment', $fields) ? $fields['docked'] : false,
+            'peek'  => array_key_exists('peek', $fields) ? $fields['peek'] : true,
             'peek_message' => array_key_exists('peek_message', $fields) ? $fields['peek_message'] : '',
 
             // Actions
             'actions' => self::get_actions($fields),
 
             // Trigger
-            'trigger' => [
-                'type' => 'load',
-            ],
+            'trigger' => self::get_trigger($fields),
 
             // Rewrite using slug
             'cookie' => [
@@ -123,5 +121,23 @@ class Enqueue
                 return array_key_exists($action['action'], $fields) && $fields[$action['action']];
             }
         ));
+    }
+
+    private function get_trigger($fields) {
+        $trigger = [
+            'type' => array_key_exists('trigger_type', $fields) ? $fields['trigger_type'] : 'load',
+        ];
+
+        if (array_key_exists("trigger_scroll", $fields)) {
+            $trigger = array_merge(
+                $trigger,
+                [
+                    'measurement' => $fields['trigger_scroll']['measurement'],
+                    'value' => $fields['trigger_scroll']['value_' . $fields['trigger_scroll']['measurement']],
+                ]
+            );
+        }
+
+        return $trigger;
     }
 }
