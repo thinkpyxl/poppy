@@ -48,7 +48,6 @@ class Enqueue
 
     private function get_popup_data($popup) {
         $meta = get_post_meta($popup->ID);
-        var_dump(! $meta['peek']);
 
         return [
             'title' => $popup->post_title,
