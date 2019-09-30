@@ -13,7 +13,65 @@ class Actions extends RegisterSettings
   public static function init()
   {
     $acf      = new Fields();
-    $fields   = [];
+    $fields   = [
+      $acf->add('boolean', [
+        'label' => 'More',
+        'slug' => 'more',
+        'instructions' => 'Display a link to another page with more information',
+      ]),
+      $acf->add('link', [
+        'label' => 'More Link',
+        'slug' => 'more_link',
+        'conditional_logic' => [
+          [
+            [
+              'field' => 'more',
+              'operator' => '==',
+              'value' => '1'
+            ]
+          ]
+        ]
+      ]),
+      $acf->add('boolean', [
+        'label' => 'Decline',
+        'slug' => 'decline',
+        'instructions' => 'Allow user to decline your popup',
+      ]),
+      $acf->add('text', [
+        'label' => 'Decline Label',
+        'slug' => 'decline_label',
+        'placeholder' => 'Decline',
+        'conditional_logic' => [
+          [
+            [
+              'field' => 'decline',
+              'operator' => '==',
+              'value' => '1'
+            ]
+          ]
+        ]
+      ]),
+      $acf->add('boolean', [
+        'label' => 'Accept',
+        'slug' => 'accept',
+        'instructions' => 'Allow user to accept your popup',
+      ]),
+      $acf->add('text', [
+        'label' => 'Accept Label',
+        'slug' => 'accept_label',
+        'placeholder' => 'Accept',
+        'conditional_logic' => [
+          [
+            [
+              'field' => 'accept',
+              'operator' => '==',
+              'value' => '1'
+            ]
+          ]
+        ]
+      ]),
+    ];
+
     $location = [
       [
         [

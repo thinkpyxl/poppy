@@ -46,38 +46,24 @@ class Enqueue
         );
     }
 
-    private function get_popup_data($popup) {
-        $meta = get_post_meta($popup->ID);
+    private function get_popup_data($popup)
+    {
+        $fields = get_fields($popup->ID);
 
         return [
             'title' => $popup->post_title,
             'slug' => $popup->post_name,
 
             // Appearance
-            'alignment' => array_key_exists('alignment', $meta) ? $meta['alignment'] : 'center',
-            'position' => array_key_exists('position', $meta) ? $meta['position'] : 'center',
-            'size' => array_key_exists('size', $meta) ? $meta['size'] : 'narrow',
-            'docked' => array_key_exists('alignment', $meta) ? $meta['docked'] == '1' : false,
-            'peek'  => array_key_exists('peek', $meta) ? $meta['peek'] == '1' : true,
-            'peek_message' => array_key_exists('peek_message', $meta) ? $meta['peek_message'] : '',
+            'alignment' => array_key_exists('alignment', $fields) ? $fields['alignment'] : 'center',
+            'position' => array_key_exists('position', $fields) ? $fields['position'] : 'center',
+            'size' => array_key_exists('size', $fields) ? $fields['size'] : 'narrow',
+            'docked' => array_key_exists('alignment', $fields) ? $fields['docked'] == '1' : false,
+            'peek'  => array_key_exists('peek', $fields) ? $fields['peek'] == '1' : true,
+            'peek_message' => array_key_exists('peek_message', $fields) ? $fields['peek_message'] : '',
 
             // Actions
-            'actions' => [
-                [
-                    'label' => 'More',
-                    'action' => 'more',
-                    'url' => 'https://www.google.com',
-                    'target' => '_blank',
-                ],
-                [
-                    'label' => 'Decline',
-                    'action' => 'decline'
-                ],
-                [
-                    'label' => 'Accept',
-                    'action' => 'accept'
-                ]
-            ],
+            'actions' => self::get_actions($fields),
 
             // Trigger
             'trigger' => [
@@ -95,7 +81,8 @@ class Enqueue
         ];
     }
 
-    private function get_popups() {
+    private function get_popups()
+    {
         $popups_query_args = [
             'post_type' => 'poppy',
             'post_status' => 'publish',
@@ -109,5 +96,32 @@ class Enqueue
         return [
             'popups' => $_popups,
         ];
+    }
+
+    private function get_actions($fields)
+    {
+        $actions = [
+            [
+                'label' => array_key_exists('more_link', $fields) && $fields['more_link'] !== '' ? $fields['more_link']['title'] : 'More',
+                'action' => 'more',
+                'url' => array_key_exists('url', $fields) && $fields['more_link'] !== '' ? $fields['more_link']['url'] : '#',
+                'target' => array_key_exists('target', $fields) && $fields['more_link'] !== '' ? $fields['more_link']['target'] : '_blank',
+            ],
+            [
+                'label' => array_key_exists('decline_label', $fields) && $fields['decline_label'] !== '' ? $fields['decline_label'] : 'Decline',
+                'action' => 'decline'
+            ],
+            [
+                'label' => array_key_exists('accept_label', $fields) && $fields['accept_label']!== '' ? $fields['accept_label'] : 'Accept',
+                'action' => 'accept'
+            ]
+        ];
+
+        return array_values(array_filter(
+            $actions,
+            function ($action) use ($fields) {
+                return array_key_exists($action['action'], $fields) && $fields[$action['action']];
+            }
+        ));
     }
 }
