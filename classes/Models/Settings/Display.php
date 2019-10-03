@@ -2,39 +2,58 @@
 
 namespace Poppy\Models\Settings;
 
-use Poppy\Utils\Views;
+use Poppy\Utils\Fields;
+use Poppy\Models\PostTypes;
 
-class Display
+class Display extends RegisterSettings
 {
-    public static function init()
-    {
-        $class = new self;
-        add_action('add_meta_boxes', [$class, 'register'], 10);
-        add_action('save_post', [$class, 'save']);
-    }
+  const SLUG  = 'display';
+  const LABEL = 'Display';
 
-    public static function register()
-    {
-      $class = new self;
-      \add_meta_box(
-    		'poppy_display',
-    		'Display',
-    		[$class, 'render'],
-    		'poppy',
-    		'side',
-    		'high'
-    	);
-    }
-
-    public static function render() {
-      global $post;
-      $meta = get_post_meta($post->ID);
-
-      echo Views::get_view('Settings/Display', $meta);
-    }
-
-    public static function save($post_id) {
-      // var_dump($_POST['poppy']);
-      // die;
-    }
+  public static function init()
+  {
+    $acf      = new Fields();
+    $fields   = [
+      $acf->add('boolean', [
+        'label' => 'All Pages',
+        'slug' => 'all_pages',
+        'ui' => 1
+      ]),
+      $acf->add('post_object', [
+        'label' => 'Select Pages',
+        'slug' => 'pages',
+        'post_type' => [
+          'post',
+          'page'
+        ],
+        'multiple' => 1,
+        'conditional_logic' => [
+          [
+            [
+              'field' => 'all_pages',
+              'operator' => '==',
+              'value' => '0'
+            ],
+          ]
+        ]
+      ])
+    ];
+    $location = [
+      [
+        [
+          'param'    => 'post_type',
+          'operator' => '==',
+          'value'    => PostTypes\Poppy::SLUG,
+        ],
+      ],
+    ];
+    parent::register([
+      'slug'            => PostTypes\Poppy::SLUG . '__' . self::SLUG,
+      'label_placement' => 'top',
+      'name'            => __(self::LABEL, 'core'),
+      'fields'          => $fields,
+      'position'        => 'side',
+      'location'        => $location,
+    ]);
+  }
 }

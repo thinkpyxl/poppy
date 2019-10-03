@@ -1,13 +1,13 @@
-const dismiss = (popup, cookie) => ({ currentTarget }) => {
+const { localStorage: storage } = window;
+
+const dismiss = (popup, slug) => ({ currentTarget }) => {
   popup.classList.add('inactive');
   
-  if (cookie) {
-    document.cookie = `${cookie.name}=false; expires=${cookie.expires}; path=/`;
-  }
+  storage.setItem(`poppy_${slug}_response`, false);
 
   window.setTimeout(
     () => popup.remove(),
-    1000
+    300
   );
 }
 

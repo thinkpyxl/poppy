@@ -2,44 +2,93 @@
 
 namespace Poppy\Models\Settings;
 
-use Poppy\Utils\Views;
+use Poppy\Utils\Fields;
+use Poppy\Models\PostTypes;
 
-class Actions
+class Actions extends RegisterSettings
 {
-    public static function init()
-    {
-        $class = new self;
-        add_action('add_meta_boxes', [$class, 'register'], 10);
-        add_action('save_post', [$class, 'save']);
-    }
+  const SLUG  = 'actions';
+  const LABEL = 'Actions';
 
-    public static function register()
-    {
-      $class = new self;
-      \add_meta_box(
-    		'poppy_actions',
-    		'Actions',
-    		[$class, 'render'],
-    		'poppy',
-    		'side',
-    		'high'
-    	);
-    }
+  public static function init()
+  {
+    $acf      = new Fields();
+    $fields   = [
+      $acf->add('boolean', [
+        'label' => 'More',
+        'slug' => 'more',
+        'instructions' => 'Display a link to another page with more information',
+      ]),
+      $acf->add('link', [
+        'label' => 'More Link',
+        'slug' => 'more_link',
+        'conditional_logic' => [
+          [
+            [
+              'field' => 'more',
+              'operator' => '==',
+              'value' => '1'
+            ]
+          ]
+        ]
+      ]),
+      $acf->add('boolean', [
+        'label' => 'Decline',
+        'slug' => 'decline',
+        'instructions' => 'Allow user to decline your popup',
+      ]),
+      $acf->add('text', [
+        'label' => 'Decline Label',
+        'slug' => 'decline_label',
+        'placeholder' => 'Decline',
+        'conditional_logic' => [
+          [
+            [
+              'field' => 'decline',
+              'operator' => '==',
+              'value' => '1'
+            ]
+          ]
+        ]
+      ]),
+      $acf->add('boolean', [
+        'label' => 'Accept',
+        'slug' => 'accept',
+        'instructions' => 'Allow user to accept your popup',
+      ]),
+      $acf->add('text', [
+        'label' => 'Accept Label',
+        'slug' => 'accept_label',
+        'placeholder' => 'Accept',
+        'conditional_logic' => [
+          [
+            [
+              'field' => 'accept',
+              'operator' => '==',
+              'value' => '1'
+            ]
+          ]
+        ]
+      ]),
+    ];
 
-    public static function render() {
-      global $post;
-      $meta = get_post_meta($post->ID);
-      $fields = [
-        'accept_display' => true,
-        'decline_display' => true,
-        'more_display' => false,
-      ];
-
-      echo Views::get_view('Settings/Actions', $fields);
-    }
-
-    public static function save($post_id) {
-      // var_dump($_POST['poppy']);
-      // die;
-    }
+    $location = [
+      [
+        [
+          'param'    => 'post_type',
+          'operator' => '==',
+          'value'    => PostTypes\Poppy::SLUG,
+        ],
+      ],
+    ];
+    
+    parent::register([
+      'slug'            => PostTypes\Poppy::SLUG . '__' . self::SLUG,
+      'label_placement' => 'top',
+      'name'            => __(self::LABEL, 'core'),
+      'fields'          => $fields,
+      'position'        => 'side',
+      'location'        => $location,
+    ]);
+  }
 }

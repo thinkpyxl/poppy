@@ -2,6 +2,8 @@
 
 namespace Poppy\Controllers\Client;
 
+use Poppy\Utils\Helpers;
+
 class Enqueue
 {
     private static $class = null;
@@ -19,7 +21,7 @@ class Enqueue
 
         wp_register_script(
             'poppy',
-            \Poppy\URI . $path,
+            Helpers::env_check($path),
             null,
             false,
             true
@@ -38,77 +40,118 @@ class Enqueue
 
     public static function enqueue_styles()
     {
+        if (is_admin()) {
+            return false;
+        }
+
         $path = 'dist/styles/poppy.css';
 
         wp_enqueue_style(
             'poppy',
-            \Poppy\URI . $path
+            Helpers::env_check($path)
         );
     }
 
-    private function get_popup_data($popup) {
-        $meta = get_post_meta($popup->ID);
-        // var_dump($meta);
+    private function get_popup_data($popup)
+    {
+        $fields = get_fields($popup->ID);
 
         return [
             'title' => $popup->post_title,
             'slug' => $popup->post_name,
 
             // Appearance
-            'alignment' => array_key_exists('alignment', $meta) ? $meta['alignment'] : 'center',
-            'position' => array_key_exists('position', $meta) ? $meta['position'] : 'center',
-            'size' => array_key_exists('size', $meta) ? $meta['size'] : 'narrow',
-            'docked' => array_key_exists('alignment', $meta) ? $meta['docked'] : false,
-            'peek'  => array_key_exists('peek', $meta) ? $meta['peek'] : true,
-            'peek_message' => array_key_exists('peek_message', $meta) ? $meta['peek_message'] : 'Hola',
+            'alignment' => array_key_exists('alignment', $fields) ? $fields['alignment'] : 'center',
+            'position' => array_key_exists('position', $fields) ? $fields['position'] : 'center',
+            'size' => array_key_exists('size', $fields) ? $fields['size'] : 'narrow',
+            'docked' => array_key_exists('alignment', $fields) ? $fields['docked'] : false,
+            'peek'  => array_key_exists('peek', $fields) ? $fields['peek'] : true,
+            'peek_message' => array_key_exists('peek_message', $fields) ? $fields['peek_message'] : '',
 
             // Actions
-            'actions' => [
-                [
-                    'label' => 'More',
-                    'action' => 'more',
-                    'url' => 'https://www.google.com',
-                    'target' => '_blank',
-                ],
-                [
-                    'label' => 'Decline',
-                    'action' => 'decline'
-                ],
-                [
-                    'label' => 'Accept',
-                    'action' => 'accept'
-                ]
-            ],
+            'actions' => self::get_actions($fields),
 
             // Trigger
-            'trigger' => [
-                'type' => 'load',
-            ],
-
-            // Rewrite using slug
-            'cookie' => [
-                'name' => 'testing-cookie',
-                'expires' => '',
-            ],
+            'trigger' => self::get_trigger($fields),
 
             // content
             'content' => apply_filters('the_content', $popup->post_content)
         ];
     }
 
-    private function get_popups() {
+    private function get_popups()
+    {
+        global $post;
+
         $popups_query_args = [
             'post_type' => 'poppy',
             'post_status' => 'publish',
+            'meta_query' => [
+                'relation' => 'OR',
+                [
+                    'key' => 'pages',
+                    'value' => '"' . $post->ID . '"',
+                    'compare' => 'LIKE'
+                ],
+                [
+                    'key' => 'all_pages',
+                    'value' => '1',
+                ]
+            ]
         ];
         $popups_query = new \WP_Query($popups_query_args);
-        $_popups = array_map(
+        $popups = array_map(
             [self::$class, 'get_popup_data'],
             $popups_query->posts
         );
 
         return [
-            'popups' => $_popups,
+            'popups' => $popups,
         ];
+    }
+
+    private function get_actions($fields)
+    {
+        $actions = [
+            [
+                'label' => array_key_exists('more_link', $fields) && $fields['more_link'] !== '' ? $fields['more_link']['title'] : 'More',
+                'action' => 'more',
+                'url' => array_key_exists('url', $fields) && $fields['more_link'] !== '' ? $fields['more_link']['url'] : '#',
+                'target' => array_key_exists('target', $fields) && $fields['more_link'] !== '' ? $fields['more_link']['target'] : '_blank',
+            ],
+            [
+                'label' => array_key_exists('decline_label', $fields) && $fields['decline_label'] !== '' ? $fields['decline_label'] : 'Decline',
+                'action' => 'decline'
+            ],
+            [
+                'label' => array_key_exists('accept_label', $fields) && $fields['accept_label']!== '' ? $fields['accept_label'] : 'Accept',
+                'action' => 'accept'
+            ]
+        ];
+
+        return array_values(array_filter(
+            $actions,
+            function ($action) use ($fields) {
+                return array_key_exists($action['action'], $fields) && $fields[$action['action']];
+            }
+        ));
+    }
+
+    private function get_trigger($fields) {
+        $trigger = [
+            'type' => array_key_exists('trigger_type', $fields) ? $fields['trigger_type'] : 'load',
+        ];
+
+        if (array_key_exists("trigger_scroll", $fields)) {
+            $trigger = array_merge(
+                $trigger,
+                [
+                    'measurement' => $fields['trigger_scroll']['measurement'],
+                    'value' => $fields['trigger_scroll']['value_' . $fields['trigger_scroll']['measurement']],
+                ]
+            );
+        }
+
+        return $trigger;
     }
 }
