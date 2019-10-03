@@ -4,6 +4,9 @@ namespace Poppy\Utils;
 
 class ACF
 {
+    public static function is_active() {
+        return class_exists('acf');
+    }
     /**
      * @param $prefix
      * @param $fields
