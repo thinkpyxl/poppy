@@ -15,13 +15,12 @@ const createPopup = ({
   content = '',
   actions = [],
   trigger = {},
-  cookie = '',
 }) => {
   const Popup = document.createElement('div');
   const activeActions = actions.map(
     action => ({
       ...action,
-      handler: Actions[action.action](Popup, cookie),
+      handler: Actions[action.action](Popup, slug),
     })
   );
   const Content = createContent({
