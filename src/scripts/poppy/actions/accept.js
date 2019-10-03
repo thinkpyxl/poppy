@@ -6,10 +6,8 @@ const accept = (popup, slug) => ({ currentTarget }) => {
   storage.setItem(`poppy_${slug}_response`, true);
 
   window.setTimeout(
-    300,
-    () => {
-      popup.remove();
-    }
+    () => popup.remove(),
+    300
   );
 }
 
