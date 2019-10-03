@@ -38,6 +38,10 @@ class Enqueue
 
     public static function enqueue_styles()
     {
+        if (is_admin()) {
+            return false;
+        }
+
         $path = 'dist/styles/poppy.css';
 
         wp_enqueue_style(
@@ -70,7 +74,7 @@ class Enqueue
 
             // Rewrite using slug
             'cookie' => [
-                'name' => 'testing-cookie',
+                'name' => $popup->post_name,
                 'expires' => '',
             ],
 
