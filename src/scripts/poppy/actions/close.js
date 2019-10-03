@@ -1,5 +1,7 @@
 const close = popup => ({ currentTarget }) => {
-  popup.classList.add('peek');
+  if (! popup.classList.contains('peek--false')) {
+    popup.classList.add('peek');
+  }
 }
 
 export default close;

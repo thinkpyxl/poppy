@@ -15,13 +15,12 @@ const createPopup = ({
   content = '',
   actions = [],
   trigger = {},
-  cookie = '',
 }) => {
   const Popup = document.createElement('div');
   const activeActions = actions.map(
     action => ({
       ...action,
-      handler: Actions[action.action](Popup, cookie),
+      handler: Actions[action.action](Popup, slug),
     })
   );
   const Content = createContent({
@@ -33,7 +32,7 @@ const createPopup = ({
     actions: activeActions,
     open: Actions.open(Popup),
   });
-  const classes = `poppy alignment--${alignment} position--${position} size--${size} ${peek ? 'peek' : '' } ${docked ? 'docked' : '' } inactive`;
+  const classes = `poppy alignment--${alignment} position--${position} size--${size} ${peek ? 'peek' : 'peek--false' } ${docked ? 'docked' : '' } inactive`;
 
   Popup.classList = classes;
   Popup.appendChild(Content);
