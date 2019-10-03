@@ -2,6 +2,8 @@
 
 namespace Poppy\Controllers\Client;
 
+use Poppy\Utils\Helpers;
+
 class Enqueue
 {
     private static $class = null;
@@ -19,7 +21,7 @@ class Enqueue
 
         wp_register_script(
             'poppy',
-            \Poppy\URI . $path,
+            Helpers::env_check($path),
             null,
             false,
             true
@@ -46,7 +48,7 @@ class Enqueue
 
         wp_enqueue_style(
             'poppy',
-            \Poppy\URI . $path
+            Helpers::env_check($path)
         );
     }
 
