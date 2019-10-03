@@ -72,12 +72,6 @@ class Enqueue
             // Trigger
             'trigger' => self::get_trigger($fields),
 
-            // Rewrite using slug
-            'cookie' => [
-                'name' => $popup->post_name,
-                'expires' => '',
-            ],
-
             // content
             'content' => apply_filters('the_content', $popup->post_content)
         ];
