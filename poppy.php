@@ -15,6 +15,8 @@ defined('WPINC') || die;
 define(__NAMESPACE__ . '\PATH', plugin_dir_path(__FILE__));
 define(__NAMESPACE__ . '\URI', plugin_dir_url(__FILE__));
 
+register_activation_hook(__FILE__, ['Poppy\Controllers\Register', 'handler']);
+
 require_once 'lib/autoload.php';
 
 add_action('plugins_loaded', function () {
