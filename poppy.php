@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Poppy
  * Description: A WordPress popup plugin
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Pyxl Inc.
  * Author URI: https://pyxl.com
  * License: GPLv3+
