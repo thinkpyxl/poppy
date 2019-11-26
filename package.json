@@ -4,7 +4,7 @@
     "type": "git",
     "url": "git://github.com/thinkpyxl/poppy.git"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "GPL-3.0-or-later",
   "watch": {
     "proxy": "https://test.test",
