@@ -114,10 +114,10 @@ class Enqueue
     {
         $actions = [
             [
-                'label' => array_key_exists('more_link', $fields) && $fields['more_link'] !== '' ? $fields['more_link']['title'] : 'More',
+                'label' => array_key_exists('title', $fields['more_link']) && $fields['more_link']['title'] !== '' ? $fields['more_link']['title'] : 'More',
                 'action' => 'more',
-                'url' => array_key_exists('url', $fields) && $fields['more_link'] !== '' ? $fields['more_link']['url'] : '#',
-                'target' => array_key_exists('target', $fields) && $fields['more_link'] !== '' ? $fields['more_link']['target'] : '_blank',
+                'url' => array_key_exists('url', $fields['more_link']) && $fields['more_link']['url'] !== '' ? $fields['more_link']['url'] : '#',
+                'target' => array_key_exists('target', $fields['more_link']) && $fields['more_link']['target'] !== '' ? $fields['more_link']['target'] : '_blank',
             ],
             [
                 'label' => array_key_exists('decline_label', $fields) && $fields['decline_label'] !== '' ? $fields['decline_label'] : 'Decline',
