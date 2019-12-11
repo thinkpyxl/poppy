@@ -23,8 +23,7 @@ class Display extends RegisterSettings
         'label' => 'Select Pages',
         'slug' => 'pages',
         'post_type' => [
-          'post',
-          'page'
+          'page',
         ],
         'multiple' => 1,
         'conditional_logic' => [
