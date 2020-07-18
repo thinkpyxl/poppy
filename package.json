@@ -28,7 +28,7 @@
     "core-js": "^2.6.5",
     "globule": "^1.2.1",
     "line-clamp": "^0.0.9",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "sanitize.css": "^8.0.1",
     "scrolldir": "^1.5.0"
   },
