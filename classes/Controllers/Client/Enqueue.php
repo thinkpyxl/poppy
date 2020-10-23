@@ -79,7 +79,7 @@ class Enqueue
         ];
     }
 
-    private function get_popups()
+    private static function get_popups()
     {
         global $post;
 
