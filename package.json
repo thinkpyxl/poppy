@@ -24,7 +24,7 @@
     "prod": "NODE_ENV=production gulp prod"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "core-js": "^2.6.5",
     "globule": "^1.2.1",
     "line-clamp": "^0.0.9",
